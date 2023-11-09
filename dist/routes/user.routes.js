@@ -1,12 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const user_register_dto_1 = __importDefault(require("../dto/user-register.dto"));
+const user_login_dto_1 = __importDefault(require("../dto/user-login.dto"));
+const user_update_data_dto_1 = __importDefault(require("../dto/user-update-data.dto"));
+const user_update_email_dto_1 = __importDefault(require("../dto/user-update-email.dto"));
+const user_update_password_dto_1 = __importDefault(require("../dto/user-update-password.dto"));
+const user_unregister_dto_1 = __importDefault(require("../dto/user-unregister.dto"));
 const userRouter = (0, express_1.Router)();
-userRouter.post("/register");
-userRouter.post("/login");
+userRouter.post("/register", user_register_dto_1.default);
+userRouter.post("/login", user_login_dto_1.default);
 userRouter.get("/profile");
-userRouter.patch("/update-data");
-userRouter.patch("/update-email");
-userRouter.patch("/update-password");
-userRouter.delete("/unregister");
+userRouter.patch("/update-data", user_update_data_dto_1.default);
+userRouter.patch("/update-email", user_update_email_dto_1.default);
+userRouter.patch("/update-password", user_update_password_dto_1.default);
+userRouter.delete("/unregister", user_unregister_dto_1.default);
 exports.default = userRouter;

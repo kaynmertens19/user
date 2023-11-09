@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 const {Schema, model} = mongoose;
 
 const userSchema = new Schema({
+    _id:{
+        type: "string", _id: false
+    },
     name: {
         type: "string",
         require: true,
@@ -17,7 +20,8 @@ const userSchema = new Schema({
     }, 
     email: {
         type: "string",
-        require: true
+        require: true,
+        unique: true
     },
     password: {
         type: "string",
