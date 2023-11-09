@@ -1,18 +1,15 @@
 {
-    "name": "user-management-yt",
+    "name": "mobile-hub",
     "version": "1.0.0",
     "type": "module",
-    "description": "Aplicación para la gestión de usuarios de una aplicación web",
     "scripts": {
-        "dev": "nodemon src/index.js",
-        "start": "node src/index.js",
-        "lint": "eslint src/**/*.js --fix",
+        "dev": "nodemon dist/index.js",
+        "start": "node dist/index.js",
+        "lint": "eslint dist/**/*.js --fix",
         "prettier": "prettier --write .",
         "prepare": "husky install",
         "postinstall": "npm run prepare"
     },
-    "author": "Desarrollo Útil",
-    "license": "MIT",
     "dependencies": {
         "@sinclair/typebox": "0.23.5",
         "ajv": "8.11.0",
@@ -25,6 +22,8 @@
         "mongoose": "6.4.0"
     },
     "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.9.0",
         "eslint": "8.18.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-config-standard": "17.0.0",
@@ -34,16 +33,18 @@
         "husky": "8.0.1",
         "lint-staged": "13.0.2",
         "nodemon": "2.0.18",
-        "prettier": "2.7.1"
+        "prettier": "2.7.1",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
     },
     "imports": {
-        "#Config/*": "./src/config/*",
-        "#Constants/*": "./src/constants/*",
-        "#Controllers/*": "./src/controllers/*",
-        "#Dto/*": "./src/dto/*",
-        "#Lib/*": "./src/lib/*",
-        "#Routes/*": "./src/routes/*",
-        "#Schemas/*": "./src/schemas/*"
+        "#Config/*": "./dist/config/*",
+        "#Constants/*": "./dist/constants/*",
+        "#Controllers/*": "./dist/controllers/*",
+        "#Dto/*": "./dist/dto/*",
+        "#Lib/*": "./dist/lib/*",
+        "#Routes/*": "./dist/routes/*",
+        "#Schemas/*": "./dist/schemas/*"
     },
     "lint-staged": {
         "*.js": "eslint --fix",
