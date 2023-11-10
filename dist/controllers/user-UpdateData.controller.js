@@ -12,16 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfileController = void 0;
+exports.userUpdateDataController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const userUpdateDataController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body;
+    const { name, surname } = req.body;
     const existingUserId = yield user_schema_1.default.findById(id).exec();
     if (!existingUserId) {
         return res.status(401).send("Usuario no autorizado");
     }
-    const { _id, name, surname, email } = existingUserId;
-    return res.status(200).send({ _id, name, surname, email });
+    existingUserId.name = name;
+    existingUserId.surname = surname;
+    yield existingUserId.save();
+    return res.send("Usuario actualizado");
 });
-exports.userProfileController = userProfileController;
-exports.default = exports.userProfileController;
+exports.userUpdateDataController = userUpdateDataController;
+exports.default = exports.userUpdateDataController;

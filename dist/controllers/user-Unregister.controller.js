@@ -12,16 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfileController = void 0;
+exports.userUnregisterController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bcrypt_1 = require("bcrypt");
+const userUnregisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body;
+    const { password } = req.body;
     const existingUserId = yield user_schema_1.default.findById(id).exec();
     if (!existingUserId) {
         return res.status(401).send("Usuario no autorizado");
     }
-    const { _id, name, surname, email } = existingUserId;
-    return res.status(200).send({ _id, name, surname, email });
+    const userPassword = existingUserId.password;
+    if (typeof userPassword !== "string") {
+        // Handle the case where the password is not a valid string.
+        return res.status(500).send("Invalid password");
+    }
+    const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);
+    if (!passwordMatch) {
+        return res.status(401).send("Credenciales incorrectas");
+    }
+    yield existingUserId.delete();
+    return res.send("Usuario eliminado correctamente");
 });
-exports.userProfileController = userProfileController;
-exports.default = exports.userProfileController;
+exports.userUnregisterController = userUnregisterController;
+exports.default = exports.userUnregisterController;
