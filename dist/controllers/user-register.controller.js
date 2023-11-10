@@ -1,0 +1,38 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const user_schema_1 = __importDefault(require("../schemas/user.schema"));
+const bcrypt_1 = require("bcrypt");
+const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id, name, surname, email, password } = req.body;
+    const existingUserId = yield user_schema_1.default.findById(_id).exec();
+    if (existingUserId) {
+        return res.status(409).send("Ya existe ese usuario");
+    }
+    const existingUserEmail = yield user_schema_1.default.findById(email);
+    if (existingUserEmail) {
+        return res.status(409).send("Ya existe ese usuario");
+    }
+    const hashedPassword = yield (0, bcrypt_1.hash)(password, 12);
+    const user = new user_schema_1.default({
+        _id,
+        name,
+        surname,
+        email,
+        password: hashedPassword
+    });
+    yield user.save();
+    return res.status(201).send("Usuario has successfully registered");
+});
+exports.default = userRegisterController;

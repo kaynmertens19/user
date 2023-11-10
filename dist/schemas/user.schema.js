@@ -31,5 +31,5 @@ const userSchema = new Schema({
         require: true
     }
 });
-const userModel = model("User", userSchema);
-exports.default = userModel;
+const UserModel = model("User", userSchema);
+exports.default = UserModel;
