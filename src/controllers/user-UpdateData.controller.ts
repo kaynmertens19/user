@@ -10,14 +10,14 @@ export const userUpdateDataController = async (req: Request , res: Response ) =>
     const {name, surname} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
-   if(!existingUserId){return res.status(401).send("Usuario no autorizado")} 
+   if(!existingUserId){return res.status(401).send({errors:["usuario no existente"]})} 
 
     existingUserId.name = name;
     existingUserId.surname = surname;
 
     await existingUserId.save();
 
-   return res.send("Usuario actualizado")
+   return res.send({log:["usuario actualizado"]})
 }
 
 export default userUpdateDataController

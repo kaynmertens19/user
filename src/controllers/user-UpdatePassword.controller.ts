@@ -2,6 +2,7 @@ import { Request, Response } from "express-serve-static-core"
 import UserModel from "../schemas/user.schema";
 import {compare, hash} from "bcrypt"
 import { SignJWT } from "jose";
+import { SALT } from "../constants/salt";
 
 
 
@@ -10,27 +11,27 @@ export const userUpdatePasswordController = async (req: Request , res: Response 
     const {oldPassword, newPassword} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
-   if(!existingUserId){return res.status(401).send("Usuario no autorizado")} 
+   if(!existingUserId){return res.status(401).send({errors:["usuario no existe"]});} 
 
    const userPassword = existingUserId.password;
 
    if (typeof userPassword !== "string") {
      // Handle the case where the password is not a valid string.
-     return res.status(500).send("Invalid password");
+     return res.status(500).send({errors:["Invalid password"]});
    }
 
    const passwordMatch = await compare(oldPassword, userPassword);
 
    if(!passwordMatch) {
-    return res.status(401).send("Credenciales incorrectas");
+    return res.status(401).send({errors:["Credenciales incorrectas"]});
    }
-   const hashedPassword = await hash(newPassword, 12)
+   const hashedPassword = await hash(newPassword, SALT)
 
    existingUserId.password = hashedPassword;
 
     await existingUserId.save();
 
-   return res.send(" Contraseña del usuario actualizada")
+   return res.send({log:["Contraseña actualizada correctamente"]})
 }
 
 export default userUpdatePasswordController

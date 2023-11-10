@@ -9,7 +9,7 @@ export const userProfileController = async (req: Request , res: Response ) =>{
     const {id} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
-   if(!existingUserId){return res.status(401).send("Usuario no autorizado")} 
+   if(!existingUserId){return res.status(401).send({errors:["usuario no autorizado"]});} 
 
    const {_id, name, surname, email} = existingUserId;
 
