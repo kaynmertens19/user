@@ -17,7 +17,7 @@ const UpdatePasswordDTOSchema = Type.Object({
 })
 
 const ajv = new Ajv({allErrors: true});
-ajv.addFormat("password", /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/)
+ajv.addFormat("passwordo", /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
 
 
 addErrors(ajv).addKeyword("kind").addKeyword("modifier");

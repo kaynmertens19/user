@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
 import { jwtVerify } from "jose";
 
-// Define a custom type for the Request object
-interface CustomRequest extends Request {
-  id?: string; // Add the 'id' property to the Request object
-}
 
-const userJWTDTO = async (req: CustomRequest, res: Response, next: Function) => {
+const userJWTDTO = async (req: Request, res: Response, next: Function) => {
   const { authorization } = req.headers;
 
   if (!authorization) {

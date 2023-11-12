@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const { Schema, model } = mongoose_1.default;
-const userSchema = new Schema({
+const movieSchema = new Schema({
     _id: {
         type: "string", _id: false
     },
@@ -15,27 +15,21 @@ const userSchema = new Schema({
         minLength: 2,
         maxLength: 20
     },
-    surname: {
+    description: {
         type: "string",
         require: true,
         minLength: 2,
-        maxLength: 20
+        maxLength: 50
     },
-    email: {
-        type: "string",
-        require: true,
-        unique: true
-    },
-    password: {
-        type: "string",
-        require: true,
-    },
-    movies: [
+    createdAt: {},
+    updatedAt: {},
+    genre: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Movie"
+            ref: "Genre",
+            require: true
         }
     ]
 });
-const UserModel = model("User", userSchema);
-exports.default = UserModel;
+const movieModel = model("Moovie", movieSchema);
+exports.default = movieModel;

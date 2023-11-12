@@ -17,7 +17,7 @@ const UpdatePasswordDTOSchema = typebox_1.Type.Object({
     }
 });
 const ajv = new ajv_1.default({ allErrors: true });
-ajv.addFormat("password", /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/);
+ajv.addFormat("passwordo", /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/);
 (0, ajv_errors_1.default)(ajv).addKeyword("kind").addKeyword("modifier");
 const validateSchema = ajv.compile(UpdatePasswordDTOSchema);
 const updatePasswordDTO = (req, res, next) => {

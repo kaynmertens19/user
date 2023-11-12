@@ -4,9 +4,14 @@ import {compare} from "bcrypt"
 import { SignJWT } from "jose";
 
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    id: string; 
+  }
+}
 
 export const userUpdateEmailController = async (req: Request , res: Response ) =>{
-    const { id } = req.body;
+    const { id } = req;
     const {email, password} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();

@@ -5,9 +5,14 @@ import { SignJWT } from "jose";
 import { SALT } from "../constants/salt";
 
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    id: string; 
+  }
+}
 
 export const userUpdatePasswordController = async (req: Request , res: Response ) =>{
-    const { id } = req.body;
+    const { id } = req;
     const {oldPassword, newPassword} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
@@ -29,6 +34,7 @@ export const userUpdatePasswordController = async (req: Request , res: Response 
 
    existingUserId.password = hashedPassword;
 
+   console.log(typeof(hashedPassword))
     await existingUserId.save();
 
    return res.send({log:["Contraseña actualizada correctamente"]})

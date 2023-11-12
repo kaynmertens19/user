@@ -16,24 +16,24 @@ exports.userUpdateEmailController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const bcrypt_1 = require("bcrypt");
 const userUpdateEmailController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
+    const { id } = req;
     const { email, password } = req.body;
     const existingUserId = yield user_schema_1.default.findById(id).exec();
     if (!existingUserId) {
-        return res.status(401).send("Usuario no autorizado");
+        return res.status(401).send({ errors: ["usuario no eistente"] });
     }
     const userPassword = existingUserId.password;
     if (typeof userPassword !== "string") {
         // Handle the case where the password is not a valid string.
-        return res.status(500).send("Invalid password");
+        return res.status(500).send({ errors: ["Invalid password"] });
     }
     const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);
     if (!passwordMatch) {
-        return res.status(401).send("Credenciales incorrectas");
+        return res.status(401).send({ errors: ["Credenciales incorrectas"] });
     }
     existingUserId.email = email;
     yield existingUserId.save();
-    return res.send(" Email del usuario actualizado");
+    return res.send({ log: ["Email actualizado correctamente"] });
 });
 exports.userUpdateEmailController = userUpdateEmailController;
 exports.default = exports.userUpdateEmailController;

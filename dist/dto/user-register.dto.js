@@ -21,7 +21,7 @@ const RegisterDTOSchema = typebox_1.Type.Object({
     }
 });
 const ajv = new ajv_1.default({ allErrors: true });
-ajv.addFormat("password", /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/);
+ajv.addFormat("passwordo", /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/);
 (0, ajv_formats_1.default)(ajv, ["email", "uuid"]).addKeyword("kind").addKeyword("modifier");
 (0, ajv_errors_1.default)(ajv);
 const validateSchema = ajv.compile(RegisterDTOSchema);

@@ -20,16 +20,16 @@ const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, func
     const { email, password } = req.body;
     const existingUserEmail = yield user_schema_1.default.findOne({ email }).exec();
     if (!existingUserEmail) {
-        return res.status(401).send("Credenciales Incorrectas");
+        return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
     }
     const userPassword = existingUserEmail.password;
     if (typeof userPassword !== "string") {
         // Handle the case where the password is not a valid string.
-        return res.status(500).send("Invalid password");
+        return res.status(500).send({ errors: ["Credenciales Incorrectas"] });
     }
     const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);
     if (!passwordMatch) {
-        return res.status(401).send("Credenciales incorrectas");
+        return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
     }
     const jwtConstructor = new jose_1.SignJWT({ id: existingUserEmail._id });
     const encoder = new TextEncoder();
@@ -37,7 +37,7 @@ const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, func
         alg: 'HS256',
         typ: 'JWT'
     }).setIssuedAt().setExpirationTime('7d').sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
-    return res.status(202).send("Usuario logeado con exito");
+    return res.status(202).send({ logs: ["Usuario logeado con exito"] });
 });
 exports.userLoginController = userLoginController;
 exports.default = exports.userLoginController;

@@ -12,16 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfileController = void 0;
+exports.createMovie = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req;
-    const existingUserId = yield user_schema_1.default.findById(id).exec();
-    if (!existingUserId) {
-        return res.status(401).send({ errors: ["usuario no autorizado"] });
+const user_schema_2 = __importDefault(require("../schemas/user.schema"));
+const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, description } = req.body;
+    const { userId } = req.params;
+    try {
+        const movie = yield user_schema_1.default.create({ name, userId });
+        const user = yield user_schema_2.default.findByIdAndUpdate({ _id: userId }, { $push: { movies: movie._id } });
+        res.status(201).send("Ha sido creada correctamente");
     }
-    const { _id, name, surname, email } = existingUserId;
-    return res.status(200).send({ _id, name, surname, email });
+    catch (err) {
+        res.status(500).send("No ha podido crearse");
+    }
 });
-exports.userProfileController = userProfileController;
-exports.default = exports.userProfileController;
+exports.createMovie = createMovie;

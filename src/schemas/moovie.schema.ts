@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const {Schema, model} = mongoose;
 
-const userSchema = new Schema({
+const movieSchema = new Schema({
     _id:{
         type: "string", _id: false
     },
@@ -12,25 +12,23 @@ const userSchema = new Schema({
         minLength: 2,
         maxLength: 20
     },
-    surname: {
+    description: {
         type: "string",
         require: true,
         minLength: 2,
-        maxLength: 20
-    }, 
-    email: {
-        type: "string",
-        require: true,
-        unique: true
+        maxLength: 50
     },
-    password: {
-        type: "string",
-        require: true,
+    createdAt:{
+
     },
-    movies:[
+    updatedAt:{
+
+    },
+    genre:[
         {
             type: Schema.Types.ObjectId,
-            ref: "Movie"
+            ref: "Genre",
+            require: true
         }
     ]
     
@@ -38,6 +36,6 @@ const userSchema = new Schema({
 
 })
 
-const UserModel = model("User", userSchema);
+const movieModel = model("Moovie", movieSchema);
 
-export default UserModel
+export default movieModel;

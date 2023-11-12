@@ -15,16 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userUpdateDataController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const userUpdateDataController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
+    const { id } = req;
     const { name, surname } = req.body;
     const existingUserId = yield user_schema_1.default.findById(id).exec();
     if (!existingUserId) {
-        return res.status(401).send("Usuario no autorizado");
+        return res.status(401).send({ errors: ["usuario no existente"] });
     }
     existingUserId.name = name;
     existingUserId.surname = surname;
     yield existingUserId.save();
-    return res.send("Usuario actualizado");
+    return res.send({ log: ["usuario actualizado"] });
 });
 exports.userUpdateDataController = userUpdateDataController;
 exports.default = exports.userUpdateDataController;

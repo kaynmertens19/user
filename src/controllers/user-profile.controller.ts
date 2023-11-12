@@ -3,10 +3,15 @@ import UserModel from "../schemas/user.schema";
 import {compare} from "bcrypt"
 import { SignJWT } from "jose";
 
+declare module 'express-serve-static-core' {
+    interface Request {
+      id: string; 
+    }
+  }
 
 
 export const userProfileController = async (req: Request , res: Response ) =>{
-    const {id} = req.body;
+    const {id} = req;
 
     const existingUserId = await UserModel.findById(id).exec();
    if(!existingUserId){return res.status(401).send({errors:["usuario no autorizado"]});} 

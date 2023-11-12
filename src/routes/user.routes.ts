@@ -14,6 +14,9 @@ import userUpdateDataController from "../controllers/user-UpdateData.controller"
 import userUpdateEmailController from "../controllers/user-UpdateData.controller";
 import userUpdatePasswordController from "../controllers/user-UpdateData.controller";
 import userUnregisterController from "../controllers/user-Unregister.controller";
+
+
+
 const userRouter = Router();
 
 userRouter.post("/register", userRegisterDTO, userRegisterController)

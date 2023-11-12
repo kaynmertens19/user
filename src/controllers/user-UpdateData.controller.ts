@@ -3,10 +3,14 @@ import UserModel from "../schemas/user.schema";
 import {compare} from "bcrypt"
 import { SignJWT } from "jose";
 
-
+declare module 'express-serve-static-core' {
+    interface Request {
+      id: string; 
+    }
+  }
 
 export const userUpdateDataController = async (req: Request , res: Response ) =>{
-    const { id } = req.body;
+    const { id } = req;
     const {name, surname} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
