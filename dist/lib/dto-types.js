@@ -33,7 +33,6 @@ exports.emailDTOSchema = typebox_1.Type.String({
     }
 });
 exports.passwordDTOSchema = typebox_1.Type.String({
-    format: "passwordo",
     minLength: 10,
     maxLength: 25,
     errorMessage: {

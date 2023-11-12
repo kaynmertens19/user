@@ -36,7 +36,6 @@ export const emailDTOSchema = Type.String({
 })
 
 export const passwordDTOSchema = Type.String({
-    format: "passwordo",
     minLength: 10 ,
     maxLength: 25 ,
     errorMessage: {
