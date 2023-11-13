@@ -16,21 +16,29 @@ exports.createMovie = void 0;
 const moovie_schema_1 = __importDefault(require("../schemas/moovie.schema"));
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const genres_schema_1 = __importDefault(require("../schemas/genres.schema"));
-const create_genre_controller_1 = require("./create-genre.controller");
 const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, genreName } = req.body;
     const { userId } = req.params;
-    const existingGenre = yield genres_schema_1.default.findOne({ genreName });
-    if (!existingGenre) {
-        (0, create_genre_controller_1.createGenre)(req, res);
-    }
     try {
-        const movie = yield moovie_schema_1.default.create({ name, userId, genreName });
-        yield user_schema_1.default.findByIdAndUpdate({ _id: userId }, { $push: { movies: movie._id } });
+        // Check if the movie already exists
+        const existingMovie = yield moovie_schema_1.default.findOne({ name, userId });
+        if (existingMovie) {
+            return res.status(400).json({ message: "Movie already exists" });
+        }
+        // Check if the genre already exists
+        let genre = yield genres_schema_1.default.findOne({ name: genreName });
+        // If the genre doesn't exist, create it
+        if (!genre) {
+            genre = yield genres_schema_1.default.create({ name: genreName });
+        }
+        // Create the movie and associate it with the genre
+        const movie = yield moovie_schema_1.default.create({ name, userId, genre: genre._id });
+        // Update the user's movies array
+        yield user_schema_1.default.findByIdAndUpdate(userId, { $push: { movies: movie._id } });
         res.status(201).json(movie);
     }
     catch (err) {
-        res.status(500).send("no ha funcionado");
+        res.status(500).send("Something went wrong");
     }
 });
 exports.createMovie = createMovie;
