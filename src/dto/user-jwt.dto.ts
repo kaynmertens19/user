@@ -10,7 +10,7 @@ const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
 
   const token = authorization.split(" ")[1];
 
-  if (!tokenn) {
+  if (!token) {
     return res.status(401).send("Usuario no autorizado");
   }
 
