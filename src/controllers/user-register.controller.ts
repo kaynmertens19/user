@@ -1,32 +1,54 @@
-import { Request, Response } from "express-serve-static-core"
-import UserModel from "../schemas/user.schema";
-import {hash} from "bcrypt"
+import { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
+import { hash } from "bcrypt";
 import { SALT } from "../constants/salt";
 
+const prisma = new PrismaClient();
 
+const userRegisterController = async (req: Request, res: Response) => {
+  const { name, surname, email, password } = req.body;
 
-const userRegisterController = async (req: Request , res: Response ) =>{
-    const {_id, name, surname, email, password} = req.body;
+  try {
+    // Check if a user with the same email already exists
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
 
-   const existingUserId = await UserModel.findById(_id).exec();
-   if(existingUserId){return res.status(409).send({errors:["usuario ya existente"]})} 
+    if (existingUser) {
+      return res.status(409).send({ errors: ["Usuario ya existente"] });
+    }
 
-   const existingUserEmail = await UserModel.findById(email);
-   if(existingUserEmail){return res.status(409).send({errors:["usuario ya existente"]})} 
+    // Hash the password
+    const hashedPassword = await hash(password, SALT);
 
-    const hashedPassword = await hash(password, SALT)
+    // Create a new user using Prisma with an empty "movies" array
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        surname,
+        email,
+        password: hashedPassword,
+        movies: {
+          create: [],
+        },
+      },
+      include: {
+        movies: true,
+      },
+    });
 
-  const user =  new UserModel({
-    _id,
-     name, 
-     surname, 
-     email,
-     password:hashedPassword
-   })
+    return res.status(201).send({
+      log: ["Usuario registrado con éxito"],
+      user: newUser,
+    });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return res.status(500).send({ errors: ["Error interno del servidor"] });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
 
-   await user.save();
-
-   return res.status(201).send({log:["Usuario registrado con exito"]})
-}
-
-export default userRegisterController
+export default userRegisterController;

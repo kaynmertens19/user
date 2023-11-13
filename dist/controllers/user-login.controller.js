@@ -8,36 +8,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLoginController = void 0;
-const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const bcrypt_1 = require("bcrypt");
-const jose_1 = require("jose");
+const jsonwebtoken_1 = require("jsonwebtoken");
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    const existingUserEmail = yield user_schema_1.default.findOne({ email }).exec();
-    if (!existingUserEmail) {
-        return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
+    try {
+        // Check if the user exists
+        const existingUser = yield prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+        if (!existingUser) {
+            return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
+        }
+        const userPassword = existingUser.password;
+        if (typeof userPassword !== "string") {
+            return res.status(500).send({ errors: ["Credenciales Incorrectas"] });
+        }
+        // Compare the password using bcrypt
+        const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);
+        if (!passwordMatch) {
+            return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
+        }
+        // Generate a JSON Web Token (JWT)
+        const jwtPayload = {
+            id: existingUser.id,
+        };
+        const jwt = (0, jsonwebtoken_1.sign)(jwtPayload, process.env.JWT_PRIVATE_KEY, {
+            algorithm: 'HS256',
+            expiresIn: '7d',
+        });
+        return res.status(202).send({ logs: ["Usuario logeado con exito"], token: jwt });
     }
-    const userPassword = existingUserEmail.password;
-    if (typeof userPassword !== "string") {
-        // Handle the case where the password is not a valid string.
-        return res.status(500).send({ errors: ["Credenciales Incorrectas"] });
+    catch (error) {
+        console.error(error);
+        return res.status(500).send({ errors: ["Something went wrong"] });
     }
-    const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);
-    if (!passwordMatch) {
-        return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
-    }
-    const jwtConstructor = new jose_1.SignJWT({ id: existingUserEmail._id });
-    const encoder = new TextEncoder();
-    const jwt = yield jwtConstructor.setProtectedHeader({
-        alg: 'HS256',
-        typ: 'JWT'
-    }).setIssuedAt().setExpirationTime('7d').sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
-    return res.status(202).send({ logs: ["Usuario logeado con exito"] });
 });
 exports.userLoginController = userLoginController;
 exports.default = exports.userLoginController;

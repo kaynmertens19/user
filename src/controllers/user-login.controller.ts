@@ -1,40 +1,53 @@
-import { Request, Response } from "express-serve-static-core"
-import UserModel from "../schemas/user.schema";
-import {compare} from "bcrypt"
-import { SignJWT } from "jose";
+import { Request, Response } from "express";
+import { compare } from "bcrypt";
+import { sign, Secret } from "jsonwebtoken";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 
+export const userLoginController = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
 
-export const userLoginController = async (req: Request , res: Response ) =>{
-    const {email, password} = req.body;
+  try {
+    // Check if the user exists
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
-    const existingUserEmail = await UserModel.findOne({ email }).exec();
-   if(!existingUserEmail){return res.status(401).send({errors:["Credenciales Incorrectas"]});} 
+    if (!existingUser) {
+      return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
+    }
 
-   const userPassword = existingUserEmail.password;
+    const userPassword = existingUser.password;
 
-   if (typeof userPassword !== "string") {
-     // Handle the case where the password is not a valid string.
-     return res.status(500).send({errors:["Credenciales Incorrectas"]});
-   }
+    if (typeof userPassword !== "string") {
+      return res.status(500).send({ errors: ["Credenciales Incorrectas"] });
+    }
 
-   const passwordMatch = await compare(password, userPassword);
+    // Compare the password using bcrypt
+    const passwordMatch = await compare(password, userPassword);
 
-   if(!passwordMatch) {
-    return res.status(401).send({errors:["Credenciales Incorrectas"]});
-   }
+    if (!passwordMatch) {
+      return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
+    }
 
-   const jwtConstructor = new SignJWT({id: existingUserEmail._id});
+    // Generate a JSON Web Token (JWT)
+    const jwtPayload = {
+      id: existingUser.id,
+    };
 
-   const encoder = new TextEncoder();
+    const jwt = sign(jwtPayload, process.env.JWT_PRIVATE_KEY as Secret, {
+      algorithm: 'HS256',
+      expiresIn: '7d',
+    });
 
-   const jwt = await jwtConstructor.setProtectedHeader({
-    alg: 'HS256',
-    typ: 'JWT'
-   }).setIssuedAt().setExpirationTime('7d').sign(encoder.encode(process.env.JWT_PRIVATE_KEY))
+    return res.status(202).send({ logs: ["Usuario logeado con exito"], token: jwt });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ errors: ["Something went wrong"] });
+  }
+};
 
-   return res.status(202).send({logs:["Usuario logeado con exito"]})
-
-}
-
-export default userLoginController
+export default userLoginController;

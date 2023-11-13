@@ -9,3 +9,29 @@ datasource db {
   provider = "mongodb"
   url      = env("MONGODB_URL")
 }
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String  @unique
+  name     String 
+  surname  String
+  password String 
+  movies   Movies[]
+
+}
+
+model Movies {
+   id     String  @id @default(auto()) @map("_id") @db.ObjectId
+   name   String 
+   userId String? @db.ObjectId
+   User   User?   @relation(fields: [userId], references: [id]) 
+   genres Genres[]
+   genreId  String? @db.ObjectId
+}
+
+model Genres {
+   id     String  @id @default(auto()) @map("_id") @db.ObjectId
+   name   String 
+   movieId String? @db.ObjectId
+   Movies   Movies?   @relation(fields: [movieId], references: [id]) 
+}

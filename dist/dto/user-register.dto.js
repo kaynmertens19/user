@@ -9,7 +9,6 @@ const ajv_formats_1 = __importDefault(require("ajv-formats"));
 const ajv_errors_1 = __importDefault(require("ajv-errors"));
 const dto_types_1 = require("../lib/dto-types");
 const RegisterDTOSchema = typebox_1.Type.Object({
-    _id: dto_types_1.idDTOSchema,
     name: dto_types_1.nameDTOSchema,
     surname: dto_types_1.surnameDTOSchema,
     email: dto_types_1.emailDTOSchema,

@@ -7,7 +7,6 @@ import { idDTOSchema, nameDTOSchema, surnameDTOSchema, emailDTOSchema, passwordD
 
 
 const RegisterDTOSchema = Type.Object({
-    _id: idDTOSchema,
     name:nameDTOSchema,
     surname:surnameDTOSchema,
     email:emailDTOSchema,

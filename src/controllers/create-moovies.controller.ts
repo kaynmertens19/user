@@ -1,36 +1,66 @@
-import { Request, Response } from "express";
-import movieModel from "../schemas/moovie.schema";
-import UserModel from "../schemas/user.schema";
-import GenreModel from "../schemas/genres.schema";
+import prisma from '../config/prs';
+import { Request, Response } from 'express';
+
 
 export const createMovie = async (req: Request, res: Response) => {
-  const { name, genreName } = req.body;
-  const { userId } = req.params;
-
-  try {
-    // Check if the movie already exists
-    const existingMovie = await movieModel.findOne({ name, userId });
-
-    if (existingMovie) {
-      return res.status(400).json({ message: "Movie already exists" });
+    const { name, genreName } = req.body;
+    const userId = req.params.userId; // Ensure userId is correctly passed as a string
+  
+    try {
+      // Check if the movie already exists
+      const existingMovie = await prisma.movies.findFirst({
+        where: {
+          name,
+          userId, // Make sure userId is of type String
+        },
+      });
+  
+      if (existingMovie) {
+        return res.status(400).json({ message: 'Movie already exists' });
+      }
+  
+      // Check if the genre exists
+      let genre = await prisma.genres.findFirst({
+        where: {
+          name: genreName,
+        },
+      });
+  
+      // Create the genre if it doesn't exist
+      if (!genre) {
+        genre = await prisma.genres.create({
+          data: {
+            name: genreName,
+          },
+        });
+      }
+  
+      // Create a new movie based on the genre
+      const movie = await prisma.movies.create({
+        data: {
+          name,
+          userId, // Ensure userId is of type String
+          genreId: genre.id,
+        },
+      });
+  
+      // Update the user's movies array
+      await prisma.user.update({
+        where: {
+          id: userId, // Ensure userId is of type String
+        },
+        data: {
+          movies: {
+            connect: {
+              id: movie.id,
+            },
+          },
+        },
+      });
+  
+      res.status(201).json(movie);
+    } catch (err) {
+      console.error('Error:', err);
+      res.status(500).json({ error: 'Something went wrong' });
     }
-
-    // Check if the genre already exists
-    let genre = await GenreModel.findOne({ name: genreName });
-
-    // If the genre doesn't exist, create it
-    if (!genre) {
-      genre = await GenreModel.create({ name: genreName });
-    }
-
-    // Create the movie and associate it with the genre
-    const movie = await movieModel.create({ name, userId, genre: genre._id });
-
-    // Update the user's movies array
-    await UserModel.findByIdAndUpdate(userId, { $push: { movies: movie._id } });
-
-    res.status(201).json(movie);
-  } catch (err) {
-    res.status(500).send("Something went wrong");
-  }
-};
+  };

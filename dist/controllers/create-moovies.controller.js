@@ -13,32 +13,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMovie = void 0;
-const moovie_schema_1 = __importDefault(require("../schemas/moovie.schema"));
-const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const genres_schema_1 = __importDefault(require("../schemas/genres.schema"));
+const prs_1 = __importDefault(require("../config/prs"));
 const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, genreName } = req.body;
-    const { userId } = req.params;
+    const userId = req.params.userId; // Ensure userId is correctly passed as a string
     try {
         // Check if the movie already exists
-        const existingMovie = yield moovie_schema_1.default.findOne({ name, userId });
+        const existingMovie = yield prs_1.default.movies.findFirst({
+            where: {
+                name,
+                userId, // Make sure userId is of type String
+            },
+        });
         if (existingMovie) {
-            return res.status(400).json({ message: "Movie already exists" });
+            return res.status(400).json({ message: 'Movie already exists' });
         }
-        // Check if the genre already exists
-        let genre = yield genres_schema_1.default.findOne({ name: genreName });
-        // If the genre doesn't exist, create it
+        // Check if the genre exists
+        let genre = yield prs_1.default.genres.findFirst({
+            where: {
+                name: genreName,
+            },
+        });
+        // Create the genre if it doesn't exist
         if (!genre) {
-            genre = yield genres_schema_1.default.create({ name: genreName });
+            genre = yield prs_1.default.genres.create({
+                data: {
+                    name: genreName,
+                },
+            });
         }
-        // Create the movie and associate it with the genre
-        const movie = yield moovie_schema_1.default.create({ name, userId, genre: genre._id });
+        // Create a new movie based on the genre
+        const movie = yield prs_1.default.movies.create({
+            data: {
+                name,
+                userId,
+                genreId: genre.id,
+            },
+        });
         // Update the user's movies array
-        yield user_schema_1.default.findByIdAndUpdate(userId, { $push: { movies: movie._id } });
+        yield prs_1.default.user.update({
+            where: {
+                id: userId, // Ensure userId is of type String
+            },
+            data: {
+                movies: {
+                    connect: {
+                        id: movie.id,
+                    },
+                },
+            },
+        });
         res.status(201).json(movie);
     }
     catch (err) {
-        res.status(500).send("Something went wrong");
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Something went wrong' });
     }
 });
 exports.createMovie = createMovie;

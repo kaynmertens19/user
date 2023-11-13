@@ -8,32 +8,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_schema_1 = __importDefault(require("../schemas/user.schema"));
+const client_1 = require("@prisma/client");
 const bcrypt_1 = require("bcrypt");
 const salt_1 = require("../constants/salt");
+const prisma = new client_1.PrismaClient();
 const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, name, surname, email, password } = req.body;
-    const existingUserId = yield user_schema_1.default.findById(_id).exec();
-    if (existingUserId) {
-        return res.status(409).send({ errors: ["usuario ya existente"] });
+    const { name, surname, email, password } = req.body;
+    try {
+        // Check if a user with the same email already exists
+        const existingUser = yield prisma.user.findFirst({
+            where: {
+                email: email,
+            },
+        });
+        if (existingUser) {
+            return res.status(409).send({ errors: ["Usuario ya existente"] });
+        }
+        // Hash the password
+        const hashedPassword = yield (0, bcrypt_1.hash)(password, salt_1.SALT);
+        // Create a new user using Prisma with an empty "movies" array
+        const newUser = yield prisma.user.create({
+            data: {
+                name,
+                surname,
+                email,
+                password: hashedPassword,
+                movies: {
+                    create: [],
+                },
+            },
+            include: {
+                movies: true,
+            },
+        });
+        return res.status(201).send({
+            log: ["Usuario registrado con éxito"],
+            user: newUser,
+        });
     }
-    const existingUserEmail = yield user_schema_1.default.findById(email);
-    if (existingUserEmail) {
-        return res.status(409).send({ errors: ["usuario ya existente"] });
+    catch (error) {
+        console.error("Error registering user:", error);
+        return res.status(500).send({ errors: ["Error interno del servidor"] });
     }
-    const hashedPassword = yield (0, bcrypt_1.hash)(password, salt_1.SALT);
-    const user = new user_schema_1.default({
-        _id,
-        name,
-        surname,
-        email,
-        password: hashedPassword
-    });
-    yield user.save();
-    return res.status(201).send({ log: ["Usuario registrado con exito"] });
+    finally {
+        yield prisma.$disconnect();
+    }
 });
 exports.default = userRegisterController;
