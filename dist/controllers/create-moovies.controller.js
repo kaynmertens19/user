@@ -13,18 +13,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMovie = void 0;
+const moovie_schema_1 = __importDefault(require("../schemas/moovie.schema"));
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const user_schema_2 = __importDefault(require("../schemas/user.schema"));
+const genres_schema_1 = __importDefault(require("../schemas/genres.schema"));
+const create_genre_controller_1 = require("./create-genre.controller");
 const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description } = req.body;
+    const { name, genreName } = req.body;
     const { userId } = req.params;
+    const existingGenre = yield genres_schema_1.default.findOne({ genreName });
+    if (!existingGenre) {
+        (0, create_genre_controller_1.createGenre)(req, res);
+    }
     try {
-        const movie = yield user_schema_1.default.create({ name, userId });
-        const user = yield user_schema_2.default.findByIdAndUpdate({ _id: userId }, { $push: { movies: movie._id } });
-        res.status(201).send("Ha sido creada correctamente");
+        const movie = yield moovie_schema_1.default.create({ name, userId, genreName });
+        yield user_schema_1.default.findByIdAndUpdate({ _id: userId }, { $push: { movies: movie._id } });
+        res.status(201).json(movie);
     }
     catch (err) {
-        res.status(500).send("No ha podido crearse");
+        res.status(500).send("no ha funcionado");
     }
 });
 exports.createMovie = createMovie;

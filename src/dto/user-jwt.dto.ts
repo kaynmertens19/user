@@ -1,29 +1,29 @@
-import { Request, Response } from "express";
-import { jwtVerify } from "jose";
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken"
 
-
-const userJWTDTO = async (req: Request, res: Response, next: Function) => {
+const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.status(401).send("Usuario no autorizado");
+    return res.status(403).send("Usuario no autorizado");
   }
 
-  const jwt = authorization.split(" ")[1];
-  if (!jwt) {
+  const token = authorization.split(" ")[1];
+
+  if (!token) {
     return res.status(401).send("Usuario no autorizado");
   }
 
   try {
-    const encoder = new TextEncoder();
-    const { payload } = await jwtVerify(
-      authorization.split(" ")[1],
-      encoder.encode(process.env.JWT_PRIVATE_KEY)
-    );
+    // Verify the JWT token using your secret or private key
+    const privateKey = process.env.JWT_PRIVATE_KEY as string;
+    const decoded = jwt.verify(token, privateKey);
 
-    // Check if payload.id exists and is a string before assigning it to req.id
-    if (typeof payload.id === "string") {
-      req.id = payload.id;
+    // Assign the user ID from the decoded JWT payload to req.id
+    if (typeof decoded === "object" && decoded.hasOwnProperty("id")) {
+      req.id = decoded.id;
+    } else {
+      return res.status(401).send("Usuario no autorizado");
     }
 
     next();

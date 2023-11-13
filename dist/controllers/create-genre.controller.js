@@ -12,16 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfileController = void 0;
-const user_schema_1 = __importDefault(require("../schemas/user.schema"));
-const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req;
-    const existingUserId = yield user_schema_1.default.findById(id).exec();
-    if (!existingUserId) {
-        return res.status(401).send({ errors: ["usuario no autorizado"] });
+exports.createGenre = void 0;
+const genres_schema_1 = __importDefault(require("../schemas/genres.schema"));
+const createGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { genreName } = req.body;
+    try {
+        const genre = yield genres_schema_1.default.create({ genreName });
+        res.status(201).json(genre);
     }
-    const { _id, name, surname, email, movies } = existingUserId;
-    return res.status(200).send({ _id, name, surname, email, movies });
+    catch (err) {
+        res.status(500).send("no ha funcionado");
+    }
 });
-exports.userProfileController = userProfileController;
-exports.default = exports.userProfileController;
+exports.createGenre = createGenre;
