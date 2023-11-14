@@ -6,7 +6,7 @@ import { SALT } from "../constants/salt";
 const prisma = new PrismaClient();
 
 const userRegisterController = async (req: Request, res: Response) => {
-  const { name, surname, email, password } = req.body;
+  const { name, surname, email, password, watchList } = req.body;
 
   try {
     // Check if a user with the same email already exists
@@ -23,7 +23,7 @@ const userRegisterController = async (req: Request, res: Response) => {
     // Hash the password
     const hashedPassword = await hash(password, SALT);
 
-    // Create a new user using Prisma with an empty "movies" array
+    // Create a new user using Prisma with an empty "movies" array and watchList
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -33,6 +33,7 @@ const userRegisterController = async (req: Request, res: Response) => {
         movies: {
           create: [],
         },
+        watchList: watchList || [], // Ensure watchList is an array
       },
       include: {
         movies: true,

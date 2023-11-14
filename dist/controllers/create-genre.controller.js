@@ -8,20 +8,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createGenre = void 0;
-const genres_schema_1 = __importDefault(require("../schemas/genres.schema"));
-const createGenre = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { genreName } = req.body;
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
+const createGenreAndConnectToMovie = (genreData, movieId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const genre = yield genres_schema_1.default.create({ genreName });
-        res.status(201).json(genre);
+        // Create a new genre or find an existing genre with the same name
+        const [existingGenre] = yield prisma.genres.findMany({
+            where: {
+                name: genreData.name,
+            },
+        });
+        const genre = existingGenre || (yield prisma.genres.create({
+            data: {
+                name: genreData.name,
+            },
+        }));
+        // Connect the genre to the specified movie
+        yield prisma.movies.update({
+            where: {
+                id: movieId,
+            },
+            data: {
+                genres: {
+                    connect: {
+                        id: genre.id,
+                    },
+                },
+            },
+        });
+        return genre;
     }
-    catch (err) {
-        res.status(500).send("no ha funcionado");
+    catch (error) {
+        console.error("Error creating genre and connecting to movie:", error);
+        throw error;
+    }
+    finally {
+        yield prisma.$disconnect();
     }
 });
-exports.createGenre = createGenre;
+exports.default = createGenreAndConnectToMovie;

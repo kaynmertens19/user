@@ -17,21 +17,25 @@ model User {
   surname  String
   password String 
   movies   Movies[]
+  watchList String[]
 
 }
 
 model Movies {
-   id     String  @id @default(auto()) @map("_id") @db.ObjectId
-   name   String 
-   userId String? @db.ObjectId
-   User   User?   @relation(fields: [userId], references: [id]) 
-   genres Genres[]
-   genreId  String? @db.ObjectId
+   id          String  @id @default(auto()) @map("_id") @db.ObjectId
+   name        String 
+   userId      String? @db.ObjectId
+   User        User?   @relation(fields: [userId], references: [id]) 
+   genres      Genres[]
+   genreId     String? @db.ObjectId
+   score       Int
+   description String
+   poster_img String
 }
 
 model Genres {
-   id     String  @id @default(auto()) @map("_id") @db.ObjectId
-   name   String 
-   movieId String? @db.ObjectId
+   id       String  @id @default(auto()) @map("_id") @db.ObjectId
+   name     String 
+   movieId  String? @db.ObjectId
    Movies   Movies?   @relation(fields: [movieId], references: [id]) 
 }

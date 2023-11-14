@@ -8,58 +8,57 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMovie = void 0;
-const prs_1 = __importDefault(require("../config/prs"));
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, genreName } = req.body;
+    const { name, genreName, description, score, poster_img } = req.body;
     const userId = req.params.userId; // Ensure userId is correctly passed as a string
     try {
-        // Check if the movie already exists
-        const existingMovie = yield prs_1.default.movies.findFirst({
+        if (!description || !score || !poster_img) {
+            return res.status(400).json({ message: 'Description, score, and poster_img are required' });
+        }
+        const existingMovie = yield prisma.movies.findFirst({
             where: {
                 name,
-                userId, // Make sure userId is of type String
+                userId,
             },
         });
         if (existingMovie) {
             return res.status(400).json({ message: 'Movie already exists' });
         }
-        // Check if the genre exists
-        let genre = yield prs_1.default.genres.findFirst({
+        let genre = yield prisma.genres.findFirst({
             where: {
                 name: genreName,
             },
         });
-        // Create the genre if it doesn't exist
         if (!genre) {
-            genre = yield prs_1.default.genres.create({
+            genre = yield prisma.genres.create({
                 data: {
                     name: genreName,
                 },
             });
         }
-        // Create a new movie based on the genre
-        const movie = yield prs_1.default.movies.create({
+        const movie = yield prisma.movies.create({
             data: {
                 name,
                 userId,
-                genreId: genre.id,
+                genres: {
+                    connect: { id: genre.id }, // Connect the movie to the genre
+                },
+                description,
+                score,
+                poster_img,
             },
         });
-        // Update the user's movies array
-        yield prs_1.default.user.update({
+        yield prisma.user.update({
             where: {
-                id: userId, // Ensure userId is of type String
+                id: userId,
             },
             data: {
-                movies: {
-                    connect: {
-                        id: movie.id,
-                    },
+                watchList: {
+                    push: movie.id,
                 },
             },
         });
@@ -68,6 +67,9 @@ const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (err) {
         console.error('Error:', err);
         res.status(500).json({ error: 'Something went wrong' });
+    }
+    finally {
+        yield prisma.$disconnect(); // Disconnect the Prisma client after the operation
     }
 });
 exports.createMovie = createMovie;

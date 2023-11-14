@@ -14,7 +14,7 @@ const bcrypt_1 = require("bcrypt");
 const salt_1 = require("../constants/salt");
 const prisma = new client_1.PrismaClient();
 const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, surname, email, password } = req.body;
+    const { name, surname, email, password, watchList } = req.body;
     try {
         // Check if a user with the same email already exists
         const existingUser = yield prisma.user.findFirst({
@@ -27,7 +27,7 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         // Hash the password
         const hashedPassword = yield (0, bcrypt_1.hash)(password, salt_1.SALT);
-        // Create a new user using Prisma with an empty "movies" array
+        // Create a new user using Prisma with an empty "movies" array and watchList
         const newUser = yield prisma.user.create({
             data: {
                 name,
@@ -37,6 +37,7 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
                 movies: {
                     create: [],
                 },
+                watchList: watchList || [], // Ensure watchList is an array
             },
             include: {
                 movies: true,
