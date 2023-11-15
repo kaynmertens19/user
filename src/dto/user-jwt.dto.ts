@@ -15,11 +15,11 @@ const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    // Verify the JWT token using your secret or private key
+
     const privateKey = process.env.JWT_PRIVATE_KEY as string;
     const decoded = jwt.verify(token, privateKey);
 
-    // Assign the user ID from the decoded JWT payload to req.id
+
     if (typeof decoded === "object" && decoded.hasOwnProperty("id")) {
       req.id = decoded.id;
     } else {

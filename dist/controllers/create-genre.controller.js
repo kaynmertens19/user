@@ -9,23 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const client_1 = require("../config/client");
 const createGenreAndConnectToMovie = (genreData, movieId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Create a new genre or find an existing genre with the same name
-        const [existingGenre] = yield prisma.genres.findMany({
+        const [existingGenre] = yield client_1.prismaClient.genres.findMany({
             where: {
                 name: genreData.name,
             },
         });
-        const genre = existingGenre || (yield prisma.genres.create({
+        const genre = existingGenre || (yield client_1.prismaClient.genres.create({
             data: {
                 name: genreData.name,
             },
         }));
-        // Connect the genre to the specified movie
-        yield prisma.movies.update({
+        yield client_1.prismaClient.movies.update({
             where: {
                 id: movieId,
             },
@@ -44,7 +41,7 @@ const createGenreAndConnectToMovie = (genreData, movieId) => __awaiter(void 0, v
         throw error;
     }
     finally {
-        yield prisma.$disconnect();
+        yield client_1.prismaClient.$disconnect();
     }
 });
 exports.default = createGenreAndConnectToMovie;

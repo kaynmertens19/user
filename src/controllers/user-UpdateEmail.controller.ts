@@ -16,7 +16,7 @@ export const userUpdateEmailController = async (req: Request , res: Response ) =
    const userPassword = existingUserId.password;
 
    if (typeof userPassword !== "string") {
-     // Handle the case where the password is not a valid string.
+
      return res.status(500).send({errors:["Invalid password"]});
    }
 

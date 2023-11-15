@@ -1,16 +1,14 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
 import { SALT } from "../constants/salt";
-
-const prisma = new PrismaClient();
+import { prismaClient } from "../config/client";
 
 const userRegisterController = async (req: Request, res: Response) => {
   const { name, surname, email, password, watchList } = req.body;
 
   try {
-    // Check if a user with the same email already exists
-    const existingUser = await prisma.user.findFirst({
+  
+    const existingUser = await prismaClient.user.findFirst({
       where: {
         email: email,
       },
@@ -20,11 +18,11 @@ const userRegisterController = async (req: Request, res: Response) => {
       return res.status(409).send({ errors: ["Usuario ya existente"] });
     }
 
-    // Hash the password
+
     const hashedPassword = await hash(password, SALT);
 
-    // Create a new user using Prisma with an empty "movies" array and watchList
-    const newUser = await prisma.user.create({
+
+    const newUser = await prismaClient.user.create({
       data: {
         name,
         surname,
@@ -33,7 +31,7 @@ const userRegisterController = async (req: Request, res: Response) => {
         movies: {
           create: [],
         },
-        watchList: watchList || [], // Ensure watchList is an array
+        watchList: watchList || [], 
       },
       include: {
         movies: true,
@@ -48,7 +46,7 @@ const userRegisterController = async (req: Request, res: Response) => {
     console.error("Error registering user:", error);
     return res.status(500).send({ errors: ["Error interno del servidor"] });
   } finally {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   }
 };
 

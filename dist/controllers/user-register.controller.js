@@ -9,15 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
 const bcrypt_1 = require("bcrypt");
 const salt_1 = require("../constants/salt");
-const prisma = new client_1.PrismaClient();
+const client_1 = require("../config/client");
 const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, surname, email, password, watchList } = req.body;
     try {
-        // Check if a user with the same email already exists
-        const existingUser = yield prisma.user.findFirst({
+        const existingUser = yield client_1.prismaClient.user.findFirst({
             where: {
                 email: email,
             },
@@ -25,10 +23,8 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (existingUser) {
             return res.status(409).send({ errors: ["Usuario ya existente"] });
         }
-        // Hash the password
         const hashedPassword = yield (0, bcrypt_1.hash)(password, salt_1.SALT);
-        // Create a new user using Prisma with an empty "movies" array and watchList
-        const newUser = yield prisma.user.create({
+        const newUser = yield client_1.prismaClient.user.create({
             data: {
                 name,
                 surname,
@@ -37,7 +33,7 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
                 movies: {
                     create: [],
                 },
-                watchList: watchList || [], // Ensure watchList is an array
+                watchList: watchList || [],
             },
             include: {
                 movies: true,
@@ -53,7 +49,7 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
         return res.status(500).send({ errors: ["Error interno del servidor"] });
     }
     finally {
-        yield prisma.$disconnect();
+        yield client_1.prismaClient.$disconnect();
     }
 });
 exports.default = userRegisterController;

@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { Request, Response } from 'express';
 
-const prisma = new PrismaClient();
+import { Request, Response } from 'express';
+import { prismaClient } from '../config/client';
 
 export const createMovie = async (req: Request, res: Response) => {
   const { name, genreName, description, score, poster_img } = req.body;
@@ -12,7 +11,7 @@ export const createMovie = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Description, score, and poster_img are required' });
     }
 
-    const existingMovie = await prisma.movies.findFirst({
+    const existingMovie = await prismaClient.movies.findFirst({
       where: {
         name,
         userId,
@@ -23,26 +22,26 @@ export const createMovie = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Movie already exists' });
     }
 
-    let genre = await prisma.genres.findFirst({
+    let genre = await prismaClient.genres.findFirst({
       where: {
         name: genreName,
       },
     });
 
     if (!genre) {
-      genre = await prisma.genres.create({
+      genre = await prismaClient.genres.create({
         data: {
           name: genreName,
         },
       });
     }
 
-    const movie = await prisma.movies.create({
+    const movie = await prismaClient.movies.create({
       data: {
         name,
         userId,
         genres: {
-          connect: { id: genre.id }, // Connect the movie to the genre
+          connect: { id: genre.id }, 
         },
         description,
         score,
@@ -50,7 +49,7 @@ export const createMovie = async (req: Request, res: Response) => {
       },
     });
 
-    await prisma.user.update({
+    await prismaClient.user.update({
       where: {
         id: userId,
       },
@@ -66,6 +65,6 @@ export const createMovie = async (req: Request, res: Response) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Something went wrong' });
   } finally {
-    await prisma.$disconnect(); // Disconnect the Prisma client after the operation
+    await prismaClient.$disconnect(); 
   }
 };
