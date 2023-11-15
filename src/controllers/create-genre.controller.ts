@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prismaClient } from "../config/client";
 
-const prisma = new PrismaClient();
+
 
 interface GenreData {
   name: string;
@@ -8,21 +8,21 @@ interface GenreData {
 
 const createGenreAndConnectToMovie = async (genreData: GenreData, movieId: string) => {
   try {
-    // Create a new genre or find an existing genre with the same name
-    const [existingGenre] = await prisma.genres.findMany({
+
+    const [existingGenre] = await prismaClient.genres.findMany({
       where: {
         name: genreData.name,
       },
     });
 
-    const genre = existingGenre || (await prisma.genres.create({
+    const genre = existingGenre || (await prismaClient.genres.create({
       data: {
         name: genreData.name,
       },
     }));
 
-    // Connect the genre to the specified movie
-    await prisma.movies.update({
+  
+    await prismaClient.movies.update({
       where: {
         id: movieId,
       },
@@ -40,7 +40,7 @@ const createGenreAndConnectToMovie = async (genreData: GenreData, movieId: strin
     console.error("Error creating genre and connecting to movie:", error);
     throw error;
   } finally {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   }
 };
 

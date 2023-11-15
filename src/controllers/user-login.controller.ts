@@ -1,16 +1,15 @@
 import { Request, Response } from "express";
 import { compare } from "bcrypt";
 import { sign, Secret } from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+import { prismaClient } from "../config/client";
 
-const prisma = new PrismaClient();
 
 export const userLoginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    // Check if the user exists
-    const existingUser = await prisma.user.findUnique({
+
+    const existingUser = await prismaClient.user.findUnique({
       where: {
         email,
       },
@@ -33,7 +32,6 @@ export const userLoginController = async (req: Request, res: Response) => {
       return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
     }
 
-    // Generate a JSON Web Token (JWT)
     const jwtPayload = {
       id: existingUser.id,
     };
