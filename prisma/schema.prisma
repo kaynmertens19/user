@@ -1,41 +1,37 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
 }
 
 model User {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  email    String  @unique
-  name     String 
+  id       String   @id @default(cuid()) @map("_id") @db.Uuid
+  email    String   @unique
+  name     String
   surname  String
-  password String 
+  password String
   movies   Movies[]
   watchList String[]
-
 }
 
 model Movies {
-   id          String  @id @default(auto()) @map("_id") @db.ObjectId
-   name        String 
-   userId      String? @db.ObjectId
-   User        User?   @relation(fields: [userId], references: [id]) 
-   genres      Genres[]
-   genreId     String? @db.ObjectId
-   score       Int
-   description String
-   poster_img String
+  id          String  @id @default(cuid()) @map("_id") @db.Uuid
+  name        String
+  userId      String? @db.Uuid
+  User        User?   @relation(fields: [userId], references: [id])
+  genres      Genres[]
+  genreId     String? @db.Uuid
+  score       Int
+  description String
+  poster_img  String
 }
 
 model Genres {
-   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-   name     String 
-   movieId  String? @db.ObjectId
-   Movies   Movies?   @relation(fields: [movieId], references: [id]) 
+  id       String  @id @default(cuid()) @map("_id") @db.Uuid
+  name     String
+  movieId  String? @db.Uuid
+  Movies   Movies? @relation(fields: [movieId], references: [id])
 }
