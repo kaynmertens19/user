@@ -24,7 +24,6 @@ const userUnregisterController = (req, res) => __awaiter(void 0, void 0, void 0,
     }
     const userPassword = existingUserId.password;
     if (typeof userPassword !== "string") {
-        // Handle the case where the password is not a valid string.
         return res.status(500).send({ errors: ["Invalid password"] });
     }
     const passwordMatch = yield (0, bcrypt_1.compare)(password, userPassword);

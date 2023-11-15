@@ -12,13 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLoginController = void 0;
 const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = require("jsonwebtoken");
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const client_1 = require("../config/client");
 const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        // Check if the user exists
-        const existingUser = yield prisma.user.findUnique({
+        const existingUser = yield client_1.prismaClient.user.findUnique({
             where: {
                 email,
             },
@@ -35,7 +33,6 @@ const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, func
         if (!passwordMatch) {
             return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
         }
-        // Generate a JSON Web Token (JWT)
         const jwtPayload = {
             id: existingUser.id,
         };
