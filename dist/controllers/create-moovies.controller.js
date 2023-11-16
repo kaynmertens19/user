@@ -13,7 +13,7 @@ exports.createMovie = void 0;
 const client_1 = require("../config/client");
 const createMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, genreName, description, score, poster_img } = req.body;
-    const userId = req.params.userId; // Ensure userId is correctly passed as a string
+    const userId = req.params.userId;
     try {
         if (!description || !score || !poster_img) {
             return res.status(400).json({ message: 'Description, score, and poster_img are required' });
