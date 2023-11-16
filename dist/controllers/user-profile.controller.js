@@ -16,12 +16,20 @@ exports.userProfileController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const userProfileController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req;
-    const existingUserId = yield user_schema_1.default.findById(id).exec();
-    if (!existingUserId) {
-        return res.status(401).send({ errors: ["usuario no autorizado"] });
+    try {
+        // Find the user by ID in your database
+        const existingUser = yield user_schema_1.default.findById(id).exec();
+        if (!existingUser) {
+            return res.status(401).send({ errors: ["Usuario no autorizado"] });
+        }
+        // Destructure user properties you want to include in the response
+        const { name, surname, email, movies } = existingUser;
+        return res.status(200).send({ name, surname, email, movies });
     }
-    const { _id, name, surname, email, movies } = existingUserId;
-    return res.status(200).send({ _id, name, surname, email, movies });
+    catch (error) {
+        console.error(error);
+        return res.status(500).send({ errors: ["Algo salió mal"] });
+    }
 });
 exports.userProfileController = userProfileController;
 exports.default = exports.userProfileController;

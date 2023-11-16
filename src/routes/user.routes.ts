@@ -8,7 +8,7 @@ import updatePasswordDTO from "../dto/user-update-password.dto";
 import userUnRegisterDTO from "../dto/user-unregister.dto";
 import userJWTDTO from "../dto/user-jwt.dto";
 import userRegisterController from "../controllers/user-register.controller";
-import userLoginController from "../controllers/user-login.controller";
+import { userLoginController } from "../controllers/user-login.controller";
 import userProfileController from "../controllers/user-profile.controller";
 import userUpdateDataController from "../controllers/user-UpdateData.controller";
 import userUpdateEmailController from "../controllers/user-UpdateData.controller";
@@ -20,7 +20,7 @@ import userUnregisterController from "../controllers/user-Unregister.controller"
 const userRouter = Router();
 
 userRouter.post("/register", userRegisterDTO, userRegisterController)
- userRouter.post("/login",userLoginDTO,  userLoginController);
+ userRouter.post("/login", userLoginDTO,  userLoginController);
  userRouter.get("/profile", userJWTDTO, userProfileController);
  userRouter.patch("/update-data", userJWTDTO, updateDataDTO,  userUpdateDataController);
  userRouter.patch("/update-email", userJWTDTO,updateEmailDTO, userUpdateEmailController );

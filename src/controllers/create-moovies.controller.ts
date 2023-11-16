@@ -4,7 +4,7 @@ import { prismaClient } from '../config/client';
 
 export const createMovie = async (req: Request, res: Response) => {
   const { name, genreName, description, score, poster_img } = req.body;
-  const userId = req.params.userId; // Ensure userId is correctly passed as a string
+  const userId = req.params.userId;
 
   try {
     if (!description || !score || !poster_img) {

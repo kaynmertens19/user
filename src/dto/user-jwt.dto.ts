@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
@@ -15,18 +15,15 @@ const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-
     const privateKey = process.env.JWT_PRIVATE_KEY as string;
     const decoded = jwt.verify(token, privateKey);
 
-
     if (typeof decoded === "object" && decoded.hasOwnProperty("id")) {
       req.id = decoded.id;
+      next(); // Call next to continue to the protected route
     } else {
       return res.status(401).send("Usuario no autorizado");
     }
-
-    next();
   } catch (err) {
     return res.status(401).send("Usuario no autorizado");
   }

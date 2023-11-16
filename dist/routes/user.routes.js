@@ -12,7 +12,7 @@ const user_update_password_dto_1 = __importDefault(require("../dto/user-update-p
 const user_unregister_dto_1 = __importDefault(require("../dto/user-unregister.dto"));
 const user_jwt_dto_1 = __importDefault(require("../dto/user-jwt.dto"));
 const user_register_controller_1 = __importDefault(require("../controllers/user-register.controller"));
-const user_login_controller_1 = __importDefault(require("../controllers/user-login.controller"));
+const user_login_controller_1 = require("../controllers/user-login.controller");
 const user_profile_controller_1 = __importDefault(require("../controllers/user-profile.controller"));
 const user_UpdateData_controller_1 = __importDefault(require("../controllers/user-UpdateData.controller"));
 const user_UpdateData_controller_2 = __importDefault(require("../controllers/user-UpdateData.controller"));
@@ -20,7 +20,7 @@ const user_UpdateData_controller_3 = __importDefault(require("../controllers/use
 const user_Unregister_controller_1 = __importDefault(require("../controllers/user-Unregister.controller"));
 const userRouter = (0, express_1.Router)();
 userRouter.post("/register", user_register_dto_1.default, user_register_controller_1.default);
-userRouter.post("/login", user_login_dto_1.default, user_login_controller_1.default);
+userRouter.post("/login", user_login_dto_1.default, user_login_controller_1.userLoginController);
 userRouter.get("/profile", user_jwt_dto_1.default, user_profile_controller_1.default);
 userRouter.patch("/update-data", user_jwt_dto_1.default, user_update_data_dto_1.default, user_UpdateData_controller_1.default);
 userRouter.patch("/update-email", user_jwt_dto_1.default, user_update_email_dto_1.default, user_UpdateData_controller_2.default);

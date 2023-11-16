@@ -3,12 +3,11 @@ import { compare } from "bcrypt";
 import { sign, Secret } from "jsonwebtoken";
 import { prismaClient } from "../config/client";
 
-
 export const userLoginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-
+    // Find the user by email in your database
     const existingUser = await prismaClient.user.findUnique({
       where: {
         email,
@@ -25,27 +24,26 @@ export const userLoginController = async (req: Request, res: Response) => {
       return res.status(500).send({ errors: ["Credenciales Incorrectas"] });
     }
 
-    // Compare the password using bcrypt
+    // Compare the provided password with the hashed password using bcrypt
     const passwordMatch = await compare(password, userPassword);
 
     if (!passwordMatch) {
       return res.status(401).send({ errors: ["Credenciales Incorrectas"] });
     }
 
+    // If the password is correct, create a JWT token
     const jwtPayload = {
       id: existingUser.id,
     };
 
-    const jwt = sign(jwtPayload, process.env.JWT_PRIVATE_KEY as Secret, {
+    const jwtToken = sign(jwtPayload, process.env.JWT_PRIVATE_KEY as Secret, {
       algorithm: 'HS256',
-      expiresIn: '7d',
+      expiresIn: '7d', // Token expiration time (adjust as needed)
     });
 
-    return res.status(202).send({ logs: ["Usuario logeado con exito"], token: jwt });
+    return res.status(202).send({ logs: ["Usuario logeado con éxito"], token: jwtToken });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ errors: ["Something went wrong"] });
+    return res.status(500).send({ errors: ["Algo salió mal"] });
   }
 };
-
-export default userLoginController;

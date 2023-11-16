@@ -18,11 +18,11 @@ const userJWTDTO = (req, res, next) => {
         const decoded = jsonwebtoken_1.default.verify(token, privateKey);
         if (typeof decoded === "object" && decoded.hasOwnProperty("id")) {
             req.id = decoded.id;
+            next(); // Call next to continue to the protected route
         }
         else {
             return res.status(401).send("Usuario no autorizado");
         }
-        next();
     }
     catch (err) {
         return res.status(401).send("Usuario no autorizado");
