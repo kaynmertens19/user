@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const userJWTDTO = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
-
+  
   if (!authorization) {
     return res.status(403).send("Usuario no autorizado: Authorization header missing");
   }

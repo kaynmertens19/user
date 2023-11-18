@@ -16,7 +16,7 @@ exports.userUnregisterController = void 0;
 const user_schema_1 = __importDefault(require("../schemas/user.schema"));
 const bcrypt_1 = require("bcrypt");
 const userUnregisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
+    const { id } = req;
     const { password } = req.body;
     const existingUserId = yield user_schema_1.default.findById(id).exec();
     if (!existingUserId) {

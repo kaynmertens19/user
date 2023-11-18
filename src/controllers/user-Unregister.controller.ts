@@ -6,7 +6,7 @@ import { SignJWT } from "jose";
 
 
 export const userUnregisterController = async (req: Request , res: Response ) =>{
-    const { id } = req.body;
+    const { id } = req;
     const {password} = req.body;
 
     const existingUserId = await UserModel.findById(id).exec();
