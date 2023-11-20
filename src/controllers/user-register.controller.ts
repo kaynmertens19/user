@@ -4,10 +4,9 @@ import { SALT } from "../constants/salt";
 import { prismaClient } from "../config/client";
 
 const userRegisterController = async (req: Request, res: Response) => {
-  const { name, surname, email, password, watchList } = req.body;
+  const { name, email, watchList } = req.body;
 
   try {
-  
     const existingUser = await prismaClient.user.findFirst({
       where: {
         email: email,
@@ -18,16 +17,10 @@ const userRegisterController = async (req: Request, res: Response) => {
       return res.status(409).send({ errors: ["Usuario ya existente"] });
     }
 
-
-    const hashedPassword = await hash(password, SALT);
-
-
     const newUser = await prismaClient.user.create({
       data: {
         name,
-        surname,
         email,
-        password: hashedPassword,
         movies: {
           create: [],
         },
@@ -37,10 +30,17 @@ const userRegisterController = async (req: Request, res: Response) => {
         movies: true,
       },
     });
-
+    console.log('Backend Response:', {
+      log: ["Usuario registrado con éxito"],
+      uid: newUser._id, // Ensure newUser._id has a value
+      user: newUser,
+    });
+    // Return the MongoDB ObjectId (uid) as the UID
     return res.status(201).send({
       log: ["Usuario registrado con éxito"],
+      uid: newUser._id, // Use newUser._id as the UID
       user: newUser,
+      
     });
   } catch (error) {
     console.error("Error registering user:", error);

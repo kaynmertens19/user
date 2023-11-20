@@ -206,7 +206,7 @@ export namespace Prisma {
 
   /**
    * Prisma Client JS version: 5.6.0
-   * Query Engine version: aebc046ce8b88ebbcb45efe31cbe7d06fd6abc0a
+   * Query Engine version: e95e739751f42d8ca026f6b910f5a2dc5adeaeee
    */
   export type PrismaVersion = {
     client: string
@@ -1081,24 +1081,18 @@ export namespace Prisma {
     id: string | null
     email: string | null
     name: string | null
-    surname: string | null
-    password: string | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
     email: string | null
     name: string | null
-    surname: string | null
-    password: string | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     email: number
     name: number
-    surname: number
-    password: number
     watchList: number
     _all: number
   }
@@ -1108,24 +1102,18 @@ export namespace Prisma {
     id?: true
     email?: true
     name?: true
-    surname?: true
-    password?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
     name?: true
-    surname?: true
-    password?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
     name?: true
-    surname?: true
-    password?: true
     watchList?: true
     _all?: true
   }
@@ -1206,8 +1194,6 @@ export namespace Prisma {
     id: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList: string[]
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
@@ -1232,8 +1218,6 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     name?: boolean
-    surname?: boolean
-    password?: boolean
     watchList?: boolean
     movies?: boolean | User$moviesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1243,8 +1227,6 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     name?: boolean
-    surname?: boolean
-    password?: boolean
     watchList?: boolean
   }
 
@@ -1263,8 +1245,6 @@ export namespace Prisma {
       id: string
       email: string
       name: string
-      surname: string
-      password: string
       watchList: string[]
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -1691,8 +1671,6 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
-    readonly surname: FieldRef<"User", 'String'>
-    readonly password: FieldRef<"User", 'String'>
     readonly watchList: FieldRef<"User", 'String[]'>
   }
     
@@ -4121,8 +4099,6 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     name: 'name',
-    surname: 'surname',
-    password: 'password',
     watchList: 'watchList'
   };
 
@@ -4224,8 +4200,6 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
-    surname?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
     watchList?: StringNullableListFilter<"User">
     movies?: MoviesListRelationFilter
   }
@@ -4234,8 +4208,6 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
-    surname?: SortOrder
-    password?: SortOrder
     watchList?: SortOrder
     movies?: MoviesOrderByRelationAggregateInput
   }
@@ -4247,8 +4219,6 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
-    surname?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
     watchList?: StringNullableListFilter<"User">
     movies?: MoviesListRelationFilter
   }, "id" | "email">
@@ -4257,8 +4227,6 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
-    surname?: SortOrder
-    password?: SortOrder
     watchList?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -4272,8 +4240,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     name?: StringWithAggregatesFilter<"User"> | string
-    surname?: StringWithAggregatesFilter<"User"> | string
-    password?: StringWithAggregatesFilter<"User"> | string
     watchList?: StringNullableListFilter<"User">
   }
 
@@ -4396,8 +4362,6 @@ export namespace Prisma {
     id?: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList?: UserCreatewatchListInput | string[]
     movies?: MoviesCreateNestedManyWithoutUserInput
   }
@@ -4406,8 +4370,6 @@ export namespace Prisma {
     id?: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList?: UserCreatewatchListInput | string[]
     movies?: MoviesUncheckedCreateNestedManyWithoutUserInput
   }
@@ -4415,8 +4377,6 @@ export namespace Prisma {
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
     movies?: MoviesUpdateManyWithoutUserNestedInput
   }
@@ -4424,8 +4384,6 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
     movies?: MoviesUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -4434,24 +4392,18 @@ export namespace Prisma {
     id?: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList?: UserCreatewatchListInput | string[]
   }
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
   }
 
   export type UserUncheckedUpdateManyInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
   }
 
@@ -4598,8 +4550,6 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
-    surname?: SortOrder
-    password?: SortOrder
     watchList?: SortOrder
   }
 
@@ -4607,16 +4557,12 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
-    surname?: SortOrder
-    password?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     name?: SortOrder
-    surname?: SortOrder
-    password?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5093,8 +5039,6 @@ export namespace Prisma {
     id?: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList?: UserCreatewatchListInput | string[]
   }
 
@@ -5102,8 +5046,6 @@ export namespace Prisma {
     id?: string
     email: string
     name: string
-    surname: string
-    password: string
     watchList?: UserCreatewatchListInput | string[]
   }
 
@@ -5145,16 +5087,12 @@ export namespace Prisma {
   export type UserUpdateWithoutMoviesInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
   }
 
   export type UserUncheckedUpdateWithoutMoviesInput = {
     email?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    surname?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
     watchList?: UserUpdatewatchListInput | string[]
   }
 

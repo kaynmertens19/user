@@ -1,6 +1,5 @@
 import { Router } from "express";
 import userRegisterDTO from "../dto/user-register.dto";
-import { Request, Response } from "express";
 import userLoginDTO from "../dto/user-login.dto";
 import updateDataDTO from "../dto/user-update-data.dto";
 import updateEmailDTO from "../dto/user-update-email.dto";
@@ -14,7 +13,7 @@ import userUpdateDataController from "../controllers/user-UpdateData.controller"
 import userUpdateEmailController from "../controllers/user-UpdateData.controller";
 import userUpdatePasswordController from "../controllers/user-UpdateData.controller";
 import userUnregisterController from "../controllers/user-Unregister.controller";
-
+import checkUser from "../controllers/check-user";
 
 
 const userRouter = Router();
@@ -26,5 +25,6 @@ userRouter.post("/register", userRegisterDTO, userRegisterController)
  userRouter.patch("/update-email", userJWTDTO,updateEmailDTO, userUpdateEmailController );
  userRouter.patch("/update-password", userJWTDTO, updatePasswordDTO, userUpdatePasswordController  );
  userRouter.delete("/unregister", userJWTDTO, userUnRegisterDTO, userUnregisterController );
+ userRouter.post("/check", checkUser )
 
 export default userRouter;

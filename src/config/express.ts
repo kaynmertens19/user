@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 // Rourtes
-app.use("/api", requestRouterPublic)
-app.use("/api", requestRouterPrivate)
+app.use("/movie", movieRouter)
+app.use("/user", userRouter)
 
 export default app;

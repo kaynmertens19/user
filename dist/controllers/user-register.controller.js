@@ -9,11 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt_1 = require("bcrypt");
-const salt_1 = require("../constants/salt");
 const client_1 = require("../config/client");
 const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, surname, email, password, watchList } = req.body;
+    const { name, email, watchList } = req.body;
     try {
         const existingUser = yield client_1.prismaClient.user.findFirst({
             where: {
@@ -23,13 +21,10 @@ const userRegisterController = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (existingUser) {
             return res.status(409).send({ errors: ["Usuario ya existente"] });
         }
-        const hashedPassword = yield (0, bcrypt_1.hash)(password, salt_1.SALT);
         const newUser = yield client_1.prismaClient.user.create({
             data: {
                 name,
-                surname,
                 email,
-                password: hashedPassword,
                 movies: {
                     create: [],
                 },

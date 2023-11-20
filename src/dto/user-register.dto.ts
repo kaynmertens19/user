@@ -8,9 +8,7 @@ import { idDTOSchema, nameDTOSchema, surnameDTOSchema, emailDTOSchema, passwordD
 
 const RegisterDTOSchema = Type.Object({
     name:nameDTOSchema,
-    surname:surnameDTOSchema,
     email:emailDTOSchema,
-    password:passwordDTOSchema,
 },{
     additionalProperties: false,
     errorMessage: {
@@ -19,9 +17,8 @@ const RegisterDTOSchema = Type.Object({
 })
 
 const ajv = new Ajv({allErrors: true});
-ajv.addFormat("passwordo", /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
 
-addFormats(ajv, ["email", "uuid"] ).addKeyword("kind").addKeyword("modifier");
+addFormats(ajv, ["email"] ).addKeyword("kind").addKeyword("modifier");
 addErrors(ajv);
 
 const validateSchema = ajv.compile(RegisterDTOSchema);

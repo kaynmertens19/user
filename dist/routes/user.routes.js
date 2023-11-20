@@ -18,6 +18,7 @@ const user_UpdateData_controller_1 = __importDefault(require("../controllers/use
 const user_UpdateData_controller_2 = __importDefault(require("../controllers/user-UpdateData.controller"));
 const user_UpdateData_controller_3 = __importDefault(require("../controllers/user-UpdateData.controller"));
 const user_Unregister_controller_1 = __importDefault(require("../controllers/user-Unregister.controller"));
+const check_user_1 = __importDefault(require("../controllers/check-user"));
 const userRouter = (0, express_1.Router)();
 userRouter.post("/register", user_register_dto_1.default, user_register_controller_1.default);
 userRouter.post("/login", user_login_dto_1.default, user_login_controller_1.userLoginController);
@@ -26,4 +27,5 @@ userRouter.patch("/update-data", user_jwt_dto_1.default, user_update_data_dto_1.
 userRouter.patch("/update-email", user_jwt_dto_1.default, user_update_email_dto_1.default, user_UpdateData_controller_2.default);
 userRouter.patch("/update-password", user_jwt_dto_1.default, user_update_password_dto_1.default, user_UpdateData_controller_3.default);
 userRouter.delete("/unregister", user_jwt_dto_1.default, user_unregister_dto_1.default, user_Unregister_controller_1.default);
+userRouter.post("/check", check_user_1.default);
 exports.default = userRouter;
