@@ -32,13 +32,13 @@ const userRegisterController = async (req: Request, res: Response) => {
     });
     console.log('Backend Response:', {
       log: ["Usuario registrado con éxito"],
-      uid: newUser._id, // Ensure newUser._id has a value
+      uid: newUser._id, 
       user: newUser,
     });
-    // Return the MongoDB ObjectId (uid) as the UID
+
     return res.status(201).send({
       log: ["Usuario registrado con éxito"],
-      uid: newUser._id, // Use newUser._id as the UID
+      uid: newUser._id, 
       user: newUser,
       
     });

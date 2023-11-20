@@ -7,11 +7,11 @@ const cors = require("cors");
 
 const app = express();
 
-// Middlewares
+
 
 app.use(express.json());
 app.use(cors());
-// Rourtes
+
 app.use("/movie", movieRouter)
 app.use("/user", userRouter)
 
